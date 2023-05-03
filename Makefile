@@ -8,9 +8,6 @@ phpcs:
 phpcbf:
 	@vendor/bin/phpcbf src --extensions=php --standard=PSR12 -n
 
-php-fixer:
-	@vendor/bin/php-cs-fixer fix src
-
 test:
 	@vendor/bin/phpunit test
 
