@@ -1,0 +1,218 @@
+<?php
+
+namespace SapientPro\EbayTraditionalSDK\Tests\Services;
+
+use SapientPro\EbayTraditionalSDK\Services\BaseRestService;
+use SapientPro\EbayTraditionalSDK\Tests\Mocks\ComplexClass;
+use SapientPro\EbayTraditionalSDK\Tests\Mocks\HttpRestHandler;
+use SapientPro\EbayTraditionalSDK\Tests\Mocks\RestService;
+use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
+
+class RestServiceTest extends TestCase
+{
+    public function testConfigDefinitions()
+    {
+        $d = BaseRestService::getConfigDefinitions();
+
+        $this->assertArrayHasKey('compressResponse', $d);
+        $this->assertEquals([
+            'valid'   => ['bool'],
+            'default' => false,
+        ], $d['compressResponse']);
+
+        $this->assertArrayHasKey('debug', $d);
+        $this->assertEquals([
+            'valid'   => ['bool', 'array'],
+            'fn'      => 'SapientPro\EbayTraditionalSDK\applyDebug',
+            'default' => false,
+        ], $d['debug']);
+
+        $this->assertArrayHasKey('httpHandler', $d);
+        $this->assertEquals([
+            'valid'   => ['callable'],
+            'default' => 'SapientPro\EbayTraditionalSDK\defaultHttpHandler',
+        ], $d['httpHandler']);
+
+        $this->assertArrayHasKey('httpOptions', $d);
+        $this->assertEquals([
+            'valid'   => ['array'],
+            'default' => ['http_errors' => false],
+        ], $d['httpOptions']);
+
+        $this->assertArrayHasKey('requestLanguage', $d);
+        $this->assertEquals([
+            'valid' => ['string'],
+        ], $d['requestLanguage']);
+
+        $this->assertArrayHasKey('responseLanguage', $d);
+        $this->assertEquals([
+            'valid' => ['string'],
+        ], $d['responseLanguage']);
+
+        $this->assertArrayHasKey('sandbox', $d);
+        $this->assertEquals([
+            'valid'   => ['bool'],
+            'default' => false,
+        ], $d['sandbox']);
+    }
+
+    public function testProductionUrlIsUsed()
+    {
+        // By default sandbox will be false.
+        $h = new HttpRestHandler();
+        $s = new RestService([
+            'httpHandler' => $h,
+        ]);
+        $s->foo(new ComplexClass());
+
+        $this->assertEquals('http://production.com/v1/', $h->url);
+    }
+
+    public function testSandboxUrlIsUsed()
+    {
+        $h = new HttpRestHandler();
+        $s = new RestService([
+            'sandbox'     => true,
+            'httpHandler' => $h,
+        ]);
+        $s->foo(new ComplexClass());
+
+        $this->assertEquals('http://sandbox.com/v1/', $h->url);
+    }
+
+    public function testHttpHeadersAreCreated()
+    {
+        $h = new HttpRestHandler();
+        $s = new RestService([
+            'requestLanguage'  => 'en-GB',
+            'responseLanguage' => 'en-US',
+            'sandbox'          => true,
+            'httpHandler'      => $h,
+        ]);
+        $s->foo(new ComplexClass());
+
+        $this->assertArrayHasKey('Accept', $h->headers);
+        $this->assertEquals('application/json', $h->headers['Accept']);
+        $this->assertArrayHasKey('Accept-Language', $h->headers);
+        $this->assertEquals('en-US', $h->headers['Accept-Language']);
+        $this->assertArrayHasKey('Content-Language', $h->headers);
+        $this->assertEquals('en-GB', $h->headers['Content-Language']);
+        $this->assertArrayHasKey('Content-Type', $h->headers);
+        $this->assertEquals('application/json', $h->headers['Content-Type']);
+        $this->assertArrayHasKey('Content-Length', $h->headers);
+        $this->assertEquals(0, $h->headers['Content-Length']);
+    }
+
+    public function testJsonIsCreated()
+    {
+        $h = new HttpRestHandler();
+        $s = new RestService([
+            'httpHandler' => $h,
+        ]);
+        $r = new ComplexClass();
+        $r->foo = 'foo';
+        $s->foo($r);
+
+        $this->assertEquals(json_encode($r->toArray()), $h->body);
+    }
+
+    public function testJsonIsNotCreated()
+    {
+        $h = new HttpRestHandler();
+        $s = new RestService([
+            'httpHandler' => $h,
+        ]);
+        $s->foo(new ComplexClass());
+
+        $this->assertEquals('', $h->body);
+    }
+
+    public function testResponseIsReturned()
+    {
+        $s = new RestService([
+            'httpHandler' => new HttpRestHandler(),
+        ]);
+        $r = $s->foo(new ComplexClass());
+
+        $this->assertInstanceOf('\SapientPro\EbayTraditionalSDK\Tests\Mocks\ComplexClass', $r);
+    }
+
+    public function testDebugging()
+    {
+        $str = '';
+        $logfn = function ($value) use (&$str) {
+            $str .= $value;
+        };
+
+        $s = new RestService([
+            'debug'       => ['logfn' => $logfn],
+            'httpHandler' => new HttpRestHandler(),
+        ]);
+        $r = new ComplexClass();
+        $r->foo = 'foo';
+        $s->foo($r);
+
+        $this->assertStringContainsString('Content-Type: application/json', $str);
+        $this->assertStringContainsString('Content-Length: '.strlen(json_encode($r->toArray())), $str);
+        $this->assertStringContainsString('{', $str);
+        $this->assertStringContainsString('}', $str);
+    }
+
+    public function testCanSetConfigurationOptionsAfterInstaniation()
+    {
+        $h = new HttpRestHandler();
+        $s = new RestService([
+            'sandbox'          => true,
+            'compressResponse' => true,
+            'httpHandler'      => $h,
+            'httpOptions'      => [],
+        ]);
+
+        $this->assertEquals([
+            'apiVersion'       => 'v1',
+            'compressResponse' => true,
+            'sandbox'          => true,
+            'debug'            => false,
+            'httpHandler'      => $h,
+            'httpOptions'      => [],
+        ], $s->getConfig());
+
+        $s->setConfig([
+            'sandbox'          => false,
+            'compressResponse' => false,
+        ]);
+
+        $this->assertEquals([
+            'apiVersion'       => 'v1',
+            'compressResponse' => false,
+            'sandbox'          => false,
+            'debug'            => false,
+            'httpHandler'      => $h,
+            'httpOptions'      => [],
+        ], $s->getConfig());
+    }
+
+    public function testSetConfigWillThrow()
+    {
+        $s = new RestService([
+            'x' => 1,
+        ]);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid configuration value provided for "sandbox". Expected bool, but got int(-1)');
+
+        $s->setConfig(['sandbox' => -1]);
+    }
+
+    public function testAcceptEncodingHttpHeadersIsCreated()
+    {
+        $h = new HttpRestHandler();
+        $s = new RestService(['httpHandler' => $h, 'compressResponse' => true]);
+        $r = new ComplexClass();
+        $s->foo($r);
+
+        $this->assertArrayHasKey('Accept-Encoding', $h->headers);
+        $this->assertEquals('application/gzip', $h->headers['Accept-Encoding']);
+    }
+}
