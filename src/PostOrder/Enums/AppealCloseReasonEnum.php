@@ -1,0 +1,17 @@
+<?php
+
+declare(strict_types=1);
+
+namespace SapientPro\EbayTraditionalSDK\PostOrder\Enums;
+
+class AppealCloseReasonEnum
+{
+    public const C_APPEAL_BUYER_DENIED = 'APPEAL_BUYER_DENIED';
+    public const C_APPEAL_BUYER_WINS = 'APPEAL_BUYER_WINS';
+    public const C_APPEAL_BUYER_WINS_PARTIAL_CREDIT = 'APPEAL_BUYER_WINS_PARTIAL_CREDIT';
+    public const C_APPEAL_SELLER_DENIED = 'APPEAL_SELLER_DENIED';
+    public const C_APPEAL_SELLER_WINS_FULL_CREDIT = 'APPEAL_SELLER_WINS_FULL_CREDIT';
+    public const C_APPEAL_SELLER_WINS_FULL_CREDIT_CANCEL_RECOUP = 'APPEAL_SELLER_WINS_FULL_CREDIT_CANCEL_RECOUP';
+    public const C_APPEAL_SELLER_WINS_PARTIAL_CREDIT = 'APPEAL_SELLER_WINS_PARTIAL_CREDIT';
+    public const C_OTHER = 'OTHER';
+}
