@@ -123,7 +123,7 @@ class RepeatableType implements ArrayAccess, Countable, Iterator, JmesPathableAr
     /**
      * @return int the number of array items
      */
-    public function count()
+    public function count(): int
     {
         return count($this->data);
     }
@@ -131,7 +131,7 @@ class RepeatableType implements ArrayAccess, Countable, Iterator, JmesPathableAr
     /**
      * @return mixed the value of the current array index
      */
-    public function current()
+    public function current(): mixed
     {
         return $this->offsetGet($this->position);
     }
@@ -143,7 +143,7 @@ class RepeatableType implements ArrayAccess, Countable, Iterator, JmesPathableAr
      *
      * @return mixed returns the value for the given offset or null if it doesn't exist
      */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->offsetExists($offset) ? $this->data[$offset] : null;
     }
@@ -155,7 +155,7 @@ class RepeatableType implements ArrayAccess, Countable, Iterator, JmesPathableAr
      *
      * @return bool returns if the offset exists in the array
      */
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return isset($this->data[$offset]);
     }
@@ -163,7 +163,7 @@ class RepeatableType implements ArrayAccess, Countable, Iterator, JmesPathableAr
     /**
      * @return int the current array index
      */
-    public function key()
+    public function key(): mixed
     {
         return $this->position;
     }
@@ -187,7 +187,7 @@ class RepeatableType implements ArrayAccess, Countable, Iterator, JmesPathableAr
     /**
      * @return bool return if the current array index is valid
      */
-    public function valid()
+    public function valid(): bool
     {
         return $this->offsetExists($this->position);
     }

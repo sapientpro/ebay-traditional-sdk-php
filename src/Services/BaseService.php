@@ -126,7 +126,7 @@ abstract class BaseService
      * @return mixed returns an associative array of configuration options if no parameters are passed,
      *               otherwise returns the value for the specified configuration option
      */
-    public function getConfig(string $option = null): mixed
+    public function getConfig(?string $option = null): mixed
     {
         return null === $option
             ? $this->config

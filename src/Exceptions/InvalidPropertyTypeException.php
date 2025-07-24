@@ -24,7 +24,7 @@ class InvalidPropertyTypeException extends LogicException
         string $expectedType,
         string $actualType,
         int $code = 0,
-        Exception $previous = null
+        ?Exception $previous = null
     ) {
         parent::__construct(
             "Invalid property type provided for {$property}. Expected {$expectedType} but got {$actualType}",

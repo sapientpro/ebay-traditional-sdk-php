@@ -20,7 +20,7 @@ use function is_int;
 /**
  * Returns a description of the type for the passed value.
  *
- * @param  mixed  $value  the value whos type will be described
+ * @param mixed $value the value whos type will be described
  *
  * @return string a description of the value's type
  */
@@ -33,11 +33,30 @@ function describeType(mixed $value): string
         case 'array':
             return 'array(' . count($value) . ')';
 
+        case 'string':
+            return 'string(' . strlen($value) . ')';
+
+        case 'integer':
+            return 'int(' . $value . ')';
+
+        case 'double':
+        case 'float':
+            return 'float(' . $value . ')';
+
+        case 'boolean':
+            return 'bool(' . ($value ? 'true' : 'false') . ')';
+
+        case 'null':
+            return 'null';
+
+        case  'resource':
+            return 'resource(' . get_resource_type($value) . ')';
+
         default:
             ob_start();
             var_dump($value);
 
-            return str_replace('double(', 'float(', rtrim(ob_get_clean()));
+            return str_replace('double(', 'float(', trim(ob_get_clean()));
     }
 }
 
@@ -58,7 +77,7 @@ function arrayMergeDeep(): array
 /**
  * Merges multiple arrays, recursively, and returns the merged array.
  *
- * @param  array  $arrays  the arrays to merge
+ * @param array $arrays the arrays to merge
  *
  * @return array the merged array
  */
@@ -89,8 +108,8 @@ function arrayMergeDeepArray(array $arrays): array
 /**
  * Resolve and apply the passed credentials.
  *
- * @param  mixed  $value  the credentials
- * @param  array &$configuration  The configuration array where the resolved credentials will be stored
+ * @param mixed $value the credentials
+ * @param array &$configuration The configuration array where the resolved credentials will be stored
  *
  * @throws invalidArgumentException
  */
@@ -127,7 +146,7 @@ function applyCredentials(mixed $value, array &$configuration): void
  * Resolves the credentials with a ini provider.
  *
  * @param mixed $value needed for compatibility reasons
- * @param  array &$configuration  The configuration array where the provider will be stored
+ * @param array &$configuration The configuration array where the provider will be stored
  */
 function applyProfile(mixed $value, array &$configuration): void
 {
@@ -137,8 +156,8 @@ function applyProfile(mixed $value, array &$configuration): void
 /**
  * Applies the default debugger if required.
  *
- * @param  mixed  $value  debugger options
- * @param  array &$configuration  The configuration array where the resolved debugger will be stored
+ * @param mixed $value debugger options
+ * @param array &$configuration The configuration array where the resolved debugger will be stored
  */
 function applyDebug(mixed $value, array &$configuration): void
 {
@@ -162,7 +181,7 @@ function defaultHttpHandler(): HttpHandler
 /**
  * Helper function that returns true if the property type should be checked.
  *
- * @param  string  $type  the type name
+ * @param string $type the type name
  *
  * @return bool
  */

@@ -30,8 +30,8 @@
     "ext-curl": "*",
     "ext-mbstring": "*",
     "guzzlehttp/guzzle": "^7.0",
-    "guzzlehttp/psr7": "^1.0",
-    "guzzlehttp/promises": "^1.1"
+    "guzzlehttp/psr7": "^1.0 || ^2.4.5",
+    "guzzlehttp/promises": "^1.1 || ^2.0.3"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",

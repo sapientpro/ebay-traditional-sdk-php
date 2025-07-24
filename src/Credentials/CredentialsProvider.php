@@ -132,7 +132,7 @@ class CredentialsProvider
      * @throws InvalidArgumentException
      *
      */
-    public static function ini(string $profile = null, string $filename = null): callable
+    public static function ini(?string $profile = null, ?string $filename = null): callable
     {
         $filename = $filename ?: (self::getHomeDir() . '/.ebay_sdk/credentials');
         $profile = $profile ?: (getenv(self::ENV_PROFILE) ?: 'default');
