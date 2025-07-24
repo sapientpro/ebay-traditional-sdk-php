@@ -36,6 +36,6 @@ class HttpHandler
                 __DIR__.'/../Mocks/Response.xml'
         );
 
-        return new FulfilledPromise(new Response(200, [], Psr7\stream_for($xml)));
+        return new FulfilledPromise(new Response(200, [], Psr7\Utils::streamFor($xml)));
     }
 }

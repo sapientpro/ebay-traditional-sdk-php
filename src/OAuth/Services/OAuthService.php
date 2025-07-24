@@ -155,7 +155,7 @@ class OAuthService
      * @return mixed returns an associative array of configuration options if no parameters are passed,
      *               otherwise returns the value for the specified configuration option
      */
-    public function getConfig(string $option = null): mixed
+    public function getConfig(?string $option = null): mixed
     {
         return null === $option
             ? $this->config
@@ -240,7 +240,7 @@ class OAuthService
      *
      * @return PromiseInterface a promise that will be resolved with an object created from the JSON response
      */
-    private function callOperationAsync(string $name, BaseType $request = null): PromiseInterface
+    private function callOperationAsync(string $name, ?BaseType $request = null): PromiseInterface
     {
         $operation = static::$operations[$name];
 
@@ -413,7 +413,7 @@ class OAuthService
      *
      * @return GetAppTokenRestResponse
      */
-    public function getAppToken(GetAppTokenRestRequest $request = null): GetAppTokenRestResponse
+    public function getAppToken(?GetAppTokenRestRequest $request = null): GetAppTokenRestResponse
     {
         return $this->getAppTokenAsync($request)->wait();
     }
@@ -423,7 +423,7 @@ class OAuthService
      *
      * @return PromiseInterface
      */
-    public function getAppTokenAsync(GetAppTokenRestRequest $request = null): PromiseInterface
+    public function getAppTokenAsync(?GetAppTokenRestRequest $request = null): PromiseInterface
     {
         if (!$request) {
             $request = new GetAppTokenRestRequest();

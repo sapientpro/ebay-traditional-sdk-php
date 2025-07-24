@@ -29,6 +29,6 @@ class HttpOAuthHandler
         // Return a fake json response.
         $json = file_get_contents(__DIR__.'/../Mocks/OAuthRestResponse.json');
 
-        return new FulfilledPromise(new Response(200, [], Psr7\stream_for($json)));
+        return new FulfilledPromise(new Response(200, [], Psr7\Utils::streamFor($json)));
     }
 }

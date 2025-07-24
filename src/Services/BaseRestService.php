@@ -108,7 +108,7 @@ abstract class BaseRestService
      *
      * @return PromiseInterface a promise that will be resolved with an object created from the JSON response
      */
-    protected function callOperationAsync(string $name, BaseType $request = null): PromiseInterface
+    protected function callOperationAsync(string $name, ?BaseType $request = null): PromiseInterface
     {
         $operation = static::$operations[$name];
 
@@ -181,7 +181,7 @@ abstract class BaseRestService
      * @return mixed returns an associative array of configuration options if no parameters are passed,
      *               otherwise returns the value for the specified configuration option
      */
-    public function getConfig(string $option = null): mixed
+    public function getConfig(?string $option = null): mixed
     {
         return null === $option
             ? $this->config
