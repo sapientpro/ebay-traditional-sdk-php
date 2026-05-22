@@ -15,6 +15,8 @@ use function array_key_exists;
  * @property AmountType $PackagingHandlingCosts
  * @property bool $ShippingIrregular
  * @property AmountType $InternationalPackagingHandlingCosts
+ * @property MeasureType $WeightMajor
+ * @property MeasureType $WeightMinor
  */
 class CalculatedShippingRateType extends BaseType
 {
@@ -52,6 +54,18 @@ class CalculatedShippingRateType extends BaseType
                 'repeatable'  => false,
                 'attribute'   => false,
                 'elementName' => 'InternationalPackagingHandlingCosts',
+            ],
+            'WeightMajor'                         => [
+                'type'        => 'SapientPro\EbayTraditionalSDK\Trading\Types\MeasureType',
+                'repeatable'  => false,
+                'attribute'   => false,
+                'elementName' => 'WeightMajor',
+            ],
+            'WeightMinor'                         => [
+                'type'        => 'SapientPro\EbayTraditionalSDK\Trading\Types\MeasureType',
+                'repeatable'  => false,
+                'attribute'   => false,
+                'elementName' => 'WeightMinor',
             ],
         ];
 

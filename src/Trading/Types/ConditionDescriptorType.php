@@ -1,0 +1,62 @@
+<?php
+
+declare(strict_types=1);
+
+namespace SapientPro\EbayTraditionalSDK\Trading\Types;
+
+use SapientPro\EbayTraditionalSDK\Types\BaseType;
+
+use function array_key_exists;
+
+/**
+ * @property string $Name
+ * @property string $Value
+ * @property string $AdditionalInfo
+ */
+class ConditionDescriptorType extends BaseType
+{
+    /**
+     * @var array properties belonging to objects of this class
+     */
+    private static $propertyTypes
+        = [
+            'Name'           => [
+                'type'        => 'string',
+                'repeatable'  => false,
+                'attribute'   => false,
+                'elementName' => 'Name',
+            ],
+            'Value'          => [
+                'type'        => 'string',
+                'repeatable'  => false,
+                'attribute'   => false,
+                'elementName' => 'Value',
+            ],
+            'AdditionalInfo' => [
+                'type'        => 'string',
+                'repeatable'  => false,
+                'attribute'   => false,
+                'elementName' => 'AdditionalInfo',
+            ],
+        ];
+
+    /**
+     * @param  array  $values  optional properties and values to assign to the object
+     */
+    public function __construct(array $values = [])
+    {
+        [$parentValues, $childValues] = self::getParentValues(self::$propertyTypes, $values);
+
+        parent::__construct($parentValues);
+
+        if (!array_key_exists(__CLASS__, self::$properties)) {
+            self::$properties[__CLASS__] = array_merge(self::$properties[parent::class], self::$propertyTypes);
+        }
+
+        if (!array_key_exists(__CLASS__, self::$xmlNamespaces)) {
+            self::$xmlNamespaces[__CLASS__] = 'xmlns="urn:ebay:apis:eBLBaseComponents"';
+        }
+
+        $this->setValues(__CLASS__, $childValues);
+    }
+}

@@ -12,6 +12,7 @@ use function array_key_exists;
 
 /**
  * @property bool $GlobalShipping
+ * @property bool $ApplyShippingDiscount
  * @property CalculatedShippingRateType $CalculatedShippingRate
  * @property bool $ChangePaymentInstructions
  * @property bool $InsuranceWanted
@@ -53,6 +54,12 @@ class ShippingDetailsType extends BaseType
                 'repeatable'  => false,
                 'attribute'   => false,
                 'elementName' => 'GlobalShipping',
+            ],
+            'ApplyShippingDiscount'                    => [
+                'type'        => 'boolean',
+                'repeatable'  => false,
+                'attribute'   => false,
+                'elementName' => 'ApplyShippingDiscount',
             ],
             'CalculatedShippingRate'                   => [
                 'type'        => 'SapientPro\EbayTraditionalSDK\Trading\Types\CalculatedShippingRateType',

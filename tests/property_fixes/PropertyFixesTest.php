@@ -2,6 +2,7 @@
 
 namespace SapientPro\EbayTraditionalSDK\Types\Test;
 
+use SapientPro\EbayTraditionalSDK\Parser\XmlParser;
 use SapientPro\EbayTraditionalSDK as Sdk;
 use PHPUnit\Framework\TestCase;
 
@@ -164,6 +165,66 @@ class PropertyFixesTest extends TestCase
 
         $obj->GalleryURL = 'foo';
         $this->assertisString($obj->GalleryURL);
+    }
+
+    public function testTradingGetItemResponseCanParseCurrentItemFields()
+    {
+        $xmlParser = new XmlParser('\SapientPro\EbayTraditionalSDK\Trading\Types\GetItemResponseType');
+        $xml = <<<'XML'
+<?xml version="1.0" encoding="UTF-8"?>
+<GetItemResponse xmlns="urn:ebay:apis:eBLBaseComponents">
+  <Timestamp>2026-05-22T12:24:39.076Z</Timestamp>
+  <Ack>Success</Ack>
+  <Version>1193</Version>
+  <Build>E1193_CORE_API_19146280_R1</Build>
+  <Item>
+    <ItemID>206288399062</ItemID>
+    <IsItemEMSEligible>false</IsItemEMSEligible>
+    <ShippingDetails>
+      <ApplyShippingDiscount>true</ApplyShippingDiscount>
+      <CalculatedShippingRate>
+        <WeightMajor measurementSystem="Metric" unit="kg">0</WeightMajor>
+        <WeightMinor measurementSystem="Metric" unit="gm">28</WeightMinor>
+      </CalculatedShippingRate>
+    </ShippingDetails>
+    <IntangibleItem>false</IntangibleItem>
+    <ConditionDescriptors>
+      <ConditionDescriptor>
+        <Name>27501</Name>
+        <Value>275010</Value>
+      </ConditionDescriptor>
+      <ConditionDescriptor>
+        <Name>27502</Name>
+        <Value>275020</Value>
+      </ConditionDescriptor>
+      <ConditionDescriptor>
+        <Name>27503</Name>
+        <AdditionalInfo>71993694</AdditionalInfo>
+      </ConditionDescriptor>
+    </ConditionDescriptors>
+    <PostCheckoutExperienceEnabled>false</PostCheckoutExperienceEnabled>
+  </Item>
+</GetItemResponse>
+XML;
+
+        $response = $xmlParser->parse($xml);
+
+        $this->assertFalse($response->Item->IsItemEMSEligible);
+        $this->assertFalse($response->Item->IntangibleItem);
+        $this->assertFalse($response->Item->PostCheckoutExperienceEnabled);
+        $this->assertTrue($response->Item->ShippingDetails->ApplyShippingDiscount);
+
+        $conditionDescriptors = $response->Item->ConditionDescriptors->ConditionDescriptor;
+        $this->assertCount(3, $conditionDescriptors);
+        $this->assertSame('27501', $conditionDescriptors[0]->Name);
+        $this->assertSame('275010', $conditionDescriptors[0]->Value);
+        $this->assertSame('27503', $conditionDescriptors[2]->Name);
+        $this->assertSame('71993694', $conditionDescriptors[2]->AdditionalInfo);
+
+        $weightMajor = $response->Item->ShippingDetails->CalculatedShippingRate->WeightMajor;
+        $this->assertSame(0, $weightMajor->value);
+        $this->assertSame('Metric', $weightMajor->measurementSystem);
+        $this->assertSame('kg', $weightMajor->unit);
     }
 
     /**

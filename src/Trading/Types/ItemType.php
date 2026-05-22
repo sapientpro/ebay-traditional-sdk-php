@@ -51,6 +51,7 @@ use function array_key_exists;
  * @property ProductListingDetailsType $ProductListingDetails
  * @property int $Quantity
  * @property string $PrivateNotes
+ * @property bool $IsItemEMSEligible
  * @property bool $RelistLink
  * @property AmountType $ReservePrice
  * @property ReviseStatusType $ReviseStatus
@@ -114,6 +115,7 @@ use function array_key_exists;
  * @property int $ItemCompatibilityCount
  * @property int $ConditionID
  * @property string $ConditionDescription
+ * @property ConditionDescriptorsType $ConditionDescriptors
  * @property string $ConditionDisplayName
  * @property string $TaxCategory
  * @property QuantityAvailableHintCodeType $QuantityAvailableHint
@@ -127,6 +129,8 @@ use function array_key_exists;
  * @property ShippingServiceCostOverrideListType $ShippingServiceCostOverrideList
  * @property ShipPackageDetailsType $ShippingPackageDetails
  * @property bool $TopRatedListing
+ * @property bool $IntangibleItem
+ * @property bool $PostCheckoutExperienceEnabled
  * @property QuantityRestrictionPerBuyerInfoType $QuantityRestrictionPerBuyer
  * @property AmountType $FloorPrice
  * @property AmountType $CeilingPrice
@@ -324,6 +328,12 @@ class ItemType extends BaseType
                 'repeatable'  => false,
                 'attribute'   => false,
                 'elementName' => 'PrivateNotes',
+            ],
+            'IsItemEMSEligible'                   => [
+                'type'        => 'boolean',
+                'repeatable'  => false,
+                'attribute'   => false,
+                'elementName' => 'IsItemEMSEligible',
             ],
             'RelistLink'                          => [
                 'type'        => 'boolean',
@@ -703,6 +713,12 @@ class ItemType extends BaseType
                 'attribute'   => false,
                 'elementName' => 'ConditionDescription',
             ],
+            'ConditionDescriptors'                => [
+                'type'        => 'SapientPro\EbayTraditionalSDK\Trading\Types\ConditionDescriptorsType',
+                'repeatable'  => false,
+                'attribute'   => false,
+                'elementName' => 'ConditionDescriptors',
+            ],
             'ConditionDisplayName'                => [
                 'type'        => 'string',
                 'repeatable'  => false,
@@ -780,6 +796,18 @@ class ItemType extends BaseType
                 'repeatable'  => false,
                 'attribute'   => false,
                 'elementName' => 'TopRatedListing',
+            ],
+            'IntangibleItem'                      => [
+                'type'        => 'boolean',
+                'repeatable'  => false,
+                'attribute'   => false,
+                'elementName' => 'IntangibleItem',
+            ],
+            'PostCheckoutExperienceEnabled'       => [
+                'type'        => 'boolean',
+                'repeatable'  => false,
+                'attribute'   => false,
+                'elementName' => 'PostCheckoutExperienceEnabled',
             ],
             'QuantityRestrictionPerBuyer'         => [
                 'type'        => 'SapientPro\EbayTraditionalSDK\Trading\Types\QuantityRestrictionPerBuyerInfoType',
